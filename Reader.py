@@ -73,3 +73,6 @@ counter.sentence_lenght()
 # label.text_to_dispay()
 
 mainloop()
+
+
+
