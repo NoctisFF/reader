@@ -1,14 +1,13 @@
-# -*- coding: utf-8 -*-
-
-import os, time
-import Tkinter as tk
-from Tkinter import *
+import tkinter as tk
+from tkinter import *
+from tkinter import font
 
 def sentence_display():
     sentence = []
-    f = open('test.txt', 'rb')
+    f = open('test.txt', 'r', encoding='utf-8')
     text = f.read()
-    par = text.split('\r\n')
+    text = text[1:]
+    par = text.split('\n')
     for i in par:
         par_sent = i.split('.')
         for j in range(len(par_sent)):
@@ -28,33 +27,22 @@ class Text(tk.Label):
 
     def sentence_lenght(self):
         self._words = sentence_display()[self._count].split(' ')
-        self._length = len(self._words)
-
-        #if self._length / self._divider <= 7:
+        self._lenght = len(self._words)
         try:
-            for i in range(self._words_counter, self._words_counter + 3):
-                self._stage_words.append(self._words[i])
+            self.config(text=self._words[self._words_counter])
         except IndexError:
-            # for i in range(self._words_counter, self._length):
-            #     self._stage_words.append(self._words[i])
             pass
+        if self._words_counter < len(self._words) - 1:
+            self._words_counter += 1
         else:
-            self._divider += 1
-
-        self.config(text=self._stage_words)
-        if self._stages_count < int(self._length / self._divider):
-            self._stages_count += 1
-            self._words_counter += 3
-            del self._stage_words[:]
-        if self._stages_count > int(self._length / self._divider) - 1:
             self._count += 1
-            self._stages_count = 0
-            self._divider = 2
             self._words_counter = 0
-            del self._stage_words[:]
-        self.after(1000, self.sentence_lenght)
-
-
+        if len(self._words[self._words_counter]) <= 4:
+            self.after(300, self.sentence_lenght)
+        elif len(self._words[self._words_counter]) > 4 and len(self._words[self._words_counter]) <= 7:
+            self.after(400, self.sentence_lenght)
+        elif len(self._words[self._words_counter]) >= 8:
+            self.after(500, self.sentence_lenght)
 
     def text_to_dispay(self):
         self.config(text=sentence_display()[self._count])
@@ -63,16 +51,25 @@ class Text(tk.Label):
         self.after(300, self.text_to_dispay)
 
 window = tk.Tk()
+window.config(height=350, width=500, background='black')
 
-counter = Text(window)
-counter.pack()
+canvas = tk.Canvas(window)
+canvas.pack(fill=BOTH, expand=5)
+canvas.config(background='black')
+canvas.create_line(50,100,150,100, fill='orange')
+canvas.create_line(230,100,330,100, fill='orange')
+canvas.create_line(150,100,150,90, fill='orange')
+canvas.create_line(230,100,230,90, fill='orange')
+canvas.create_line(50,170,150,170, fill='orange')
+canvas.create_line(230,170,330,170, fill='orange')
+canvas.create_line(150,170,150,180, fill='orange')
+canvas.create_line(230,170,230,180, fill='orange')
+
+verd = font.Font(family="Trebuchet MS", size=36, weight="bold")
+
+counter = Text(window, font=verd)
+counter.config(foreground='orange', background='black', height=1, padx=400)
+counter.place(relx=0.5, rely=0.5, anchor=CENTER)
 counter.sentence_lenght()
 
-# label = Text(window)
-# label.pack(padx=25, pady=50)
-# label.text_to_dispay()
-
 mainloop()
-
-
-
